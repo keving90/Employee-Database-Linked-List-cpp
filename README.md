@@ -35,33 +35,33 @@ The main menu is displayed when the program begins:
 
 The database has now been created. Each record is inserted into the list in sorted order. When selecting "List All Employees" (4), the database is displayed:
 
-<img width="400" src="https://user-images.githubusercontent.com/30678180/40093281-469efa6c-5876-11e8-8d2e-d5e1ea58c904.png">
+<img width="400" src="https://user-images.githubusercontent.com/30678180/40387137-a90b5b60-5dc0-11e8-8137-2d425a673ad0.png">
 
 #### Entering a New User
 
 The user can enter a new employee into the database by selecting "Add Employee" (1). They are asked to enter a name, age, and salary:
 
-<img width="597" src="https://user-images.githubusercontent.com/30678180/40093385-d042d5cc-5876-11e8-84eb-c175cea82c07.png">
+<img width="597" src="https://user-images.githubusercontent.com/30678180/40387341-5083097e-5dc1-11e8-8ed8-17e54c0d98d1.png">
 
 When we display the database again, we can see the record has been added (record #7):
 
-<img width="400" src="https://user-images.githubusercontent.com/30678180/40094371-7214f048-587b-11e8-87a7-486e37e5fe8e.png">
+<img width="400" src="https://user-images.githubusercontent.com/30678180/40387387-756032b2-5dc1-11e8-9e29-46a465c594b6.png">
 
 #### Deleting a User
 
 We can delete a user by selecting "Delete Employee" (2). We will delete the user we just entered into the database:
 
-<img width="450" src="https://user-images.githubusercontent.com/30678180/40094441-d9b7e606-587b-11e8-934a-9793f0ec96be.png">
+<img width="450" src="https://user-images.githubusercontent.com/30678180/40387449-a67c0592-5dc1-11e8-89da-68fe09bcf0d6.png">
 
 The user is no longer in the database:
 
-<img width="400" src="https://user-images.githubusercontent.com/30678180/40094469-0e3f88d4-587c-11e8-998e-f5090572091b.png">
+<img width="400" src="https://user-images.githubusercontent.com/30678180/40387137-a90b5b60-5dc0-11e8-8137-2d425a673ad0.png">
 
 #### Searching for an Employee
 
 We can search for employees to see if they are in the database:
 
-<img width="450" src="https://user-images.githubusercontent.com/30678180/40094507-52e4fc94-587c-11e8-890b-326ca4ebffb5.png">
+<img width="450" src="https://user-images.githubusercontent.com/30678180/40387562-f4aa861c-5dc1-11e8-9954-7fa2f84dabfc.png">
 
 #### Saving the Database
 
