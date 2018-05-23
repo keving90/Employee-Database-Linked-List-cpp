@@ -242,9 +242,9 @@ void CEmployee::DeleteEmployee(CEmployee *&pHead, CEmployee *&pCurrent)
         delete pDeleteThis;
         
         return;
-    }
+    } // end if
     
-    CEmployee *pPrev = pHead; // Will eventually point to link before pCurrent.
+    CEmployee *pPrev = pHead; // Will eventually point to link before pDeleteThis.
     
     while (pPrev->m_pLink != pDeleteThis) // Traverse through list to set up pPrev.
         pPrev = pPrev->m_pLink;
@@ -264,7 +264,7 @@ void CEmployee::DeleteEmployee(CEmployee *&pHead, CEmployee *&pCurrent)
  Function: void CEmployee::SearchDatabase(CEmployee *&pHead, CEmployee *&pCurrent)
  
  Purpose: Searches database for employee whose name is supplied by the user. Sets pCurrent to the 
-          employee's link.
+          employee's link. Set's pCurrent to NULL if the employee is not found.
  
  Parameters:
     CEmployee *&pHead: Pointer to first link in linked list.
@@ -280,8 +280,7 @@ void CEmployee::SearchDatabase(CEmployee *&pHead, CEmployee *&pCurrent)
     
     pCurrent = pHead;
     
-    // Search through linked list, looking for link with desired employee's name.
-    while (pCurrent)
+    while (pCurrent) // Search through linked list, looking for link with desired employee's name.
     {
         if (strcmp(pCurrent->m_Name, m_Name) == 0) // Found employee in database; pCurrent points to it.
         {
@@ -329,8 +328,8 @@ void CEmployee::ListAllEmployees(CEmployee *&pHead, CEmployee *&pCurrent)
         cout << setfill(' ') << right <<  setw(3)  << pCurrent->m_Age    << " ";
         pCurrent->DisplayCommaSalary();
         
-        pCurrent = pCurrent->m_pLink;
-    }
+        pCurrent = pCurrent->m_pLink; // Traverse
+    } // end for
     
     cout << "\n\n";
 
@@ -368,11 +367,11 @@ void CEmployee::SaveToFile(const char *pFileName, CEmployee *&pHead, CEmployee *
         OutFile << pCurrent->m_Age << ";";
         OutFile << pCurrent->m_Salary;
         
-        if (pCurrent->m_pLink) // Insert newline because there are more employees to write to file.
+        if (pCurrent->m_pLink) // Insert newline if there are more employees to write to file.
             OutFile << "\n";
         
         pCurrent = pCurrent->m_pLink;
-    }
+    } // end while
     
     OutFile.close();
 }
@@ -400,7 +399,7 @@ void CEmployee::ClearDatabase(CEmployee *pHead)
         pDeleteThis = pHead;
         pHead = pHead->m_pLink;
         delete pDeleteThis;
-    }
+    } // end while
 }
 
 
@@ -431,7 +430,7 @@ void CEmployee::Insert(CEmployee *&pHead, CEmployee *&pCurrent)
     CEmployee *pPrev;
     CEmployee *pNewEmployee = new CEmployee;
     
-    // Initialize the new employee's data.
+    // Initialize the new employee's member data.
     strcpy(pNewEmployee->m_Name, m_Name);
     pNewEmployee->m_Age = m_Age;
     pNewEmployee->m_Salary = m_Salary;
@@ -444,8 +443,7 @@ void CEmployee::Insert(CEmployee *&pHead, CEmployee *&pCurrent)
         pCurrent = pHead;
         pPrev = 0;
         
-        // Traverse through the list, looking for proper place to insert employee.
-        while (pCurrent)
+        while (pCurrent) // Traverse through the list, looking for proper place to insert employee.
         {
             // New employee's name comes after current employee's name
             if (strcmp(pNewEmployee->m_Name, pCurrent->m_Name) > 0)
@@ -477,7 +475,7 @@ void CEmployee::Insert(CEmployee *&pHead, CEmployee *&pCurrent)
                 break;
             } // end else
         } // end while
-    } // else
+    } // end else
     
     return;
 }
@@ -517,7 +515,6 @@ void CEmployee::GetNameFromUser()
  
  *********************************************************************************************************/
 
-// Get emmployee's age from user and check for errors.
 void CEmployee::GetAgeFromUser()
 {
     cout << "\nEnter the employee's age: ";
@@ -585,10 +582,10 @@ void CEmployee::GetSalaryFromUser()
             cout << "\nEnter the employee's salary: ";
             
             continue;
-        }
+        } // end if
         
         break;
-    }
+    } // end while
     
     cout << endl;
     
@@ -600,8 +597,8 @@ void CEmployee::GetSalaryFromUser()
  Function: void CEmployee::DisplayCommaSalary()
  
  Purpose: Used in CEmployee::ListAllEmployees() to display this->m_Salary. Inserts commas if m_Salary
-          is greater than 1000. This function is used to print salaries < 1000 (no comma required) to 
-          keep display formatting consistent.
+          is greater than 1000. This function also prints salaries less than 1000 (no comma required)
+          to keep display formatting consistent.
  
  Parameters: None
  
@@ -631,17 +628,17 @@ void CEmployee::DisplayCommaSalary()
     {
         cout << numStr[0] << numStr[1] << numStr[2];
         index = 3; // Start at this index in while loop.
-    }
+    } // end if
     else if (strLen % 3 == 1) // Display first digit before displaying comma.
     {
         cout << numStr[0];
         index = 1; // Start at this index in while loop.
-    }
+    } // end else if
     else if (strLen % 3 == 2) // Display first 2 digits before displaying comma.
     {
         cout << numStr[0] << numStr[1];
         index = 2; // Start at this index in while loop.
-    }
+    } // end else if
     
     while (numStr[index]) // Display the rest of the string.
     {
@@ -651,7 +648,7 @@ void CEmployee::DisplayCommaSalary()
         cout << numStr[index];
         index++;
         commaCounter++;
-    }
+    } // end while
     
     cout << endl;
 }
@@ -794,10 +791,10 @@ int getUserInput()
             displayMenu();
             
             continue;
-        }
+        } // end if
         
         break;
-    }
+    } // end while
     
     return menuInput;
 }
