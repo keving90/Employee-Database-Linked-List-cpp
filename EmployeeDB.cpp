@@ -1,4 +1,5 @@
 /********************************************************************************************************
+ 
  Assignment 3 - Employee Database
  
  Name: Kevin Geiszler
@@ -11,7 +12,7 @@
  employee name. Each link contains the employee's name, age, and salary. Once the database has been established,
  the user can add employees, delete employees, search the database, display the database, save the database, 
  and exit the program. When saving the database, the program will overwrite the input file with updated database 
- information. The program will also save the database when the program exits.
+ information. The program will also save the database when it exits, if needed.
  
  Created by Kevin Geiszler on 5/20/18.
  Copyright © 2018 home. All rights reserved.
@@ -43,7 +44,13 @@ enum MenuSelection { ADD=1, DELETE, SEARCH, LIST, SAVE, EXIT };
      char m_Name: The name of the employee
      unsigned int m_Age: The employee's age
      unsigned int m_Salary: The employee's salary
-     CEmployee* m_pLink: Pointer to the next employee in the linked list (NULL by default)
+     CEmployee* m_pLink: Pointer to the next employee in the linked list
+     bool m_IsSaveNeeded: Indicates if data file needs to be saved upon exiting
+ 
+ Inline Member Functions:
+     Function Name: CheckIfSaveNeeded
+     Prototype: bool CheckIfSaveNeeded()
+     Description: Checks if the data file needs to be saved upon exiting by returning m_IsSaveNeeded.
  
  Public Member Functions:
      Function Name: Open
@@ -95,6 +102,7 @@ public:
     void ListAllEmployees(CEmployee *&pHead, CEmployee *&pCurrent);
     void SaveToFile(const char *pFileName, CEmployee *&pHead, CEmployee *&pCurrent);
     void ClearDatabase(CEmployee *pHead);
+    bool CheckIfSaveNeeded() { return m_IsSaveNeeded; };
 
 private:
     void Insert(CEmployee *&pHead, CEmployee *&pCurrent);
@@ -107,6 +115,7 @@ private:
     unsigned int m_Age;
     unsigned int m_Salary;
     CEmployee *m_pLink;
+    bool m_IsSaveNeeded;
 };
 
 
@@ -127,7 +136,8 @@ int getUserInput();
  Function: void CEmployee::Open(int argc, const char *pFileName, CEmployee *&pHead, CEmployee *&pCurrent)
  
  Purpose: Checks for valid amount of command line arguments (2). Opens file (argv[1]), reads the data,
-          and places each line of data into a linked list sorted alphabetically by name.
+          and places each line of data into a linked list sorted alphabetically by name. Also initializes
+          m_IsSaveNeeded in *this object.
  
  Parameters: 
     int argc: Number of command line arguments.
@@ -163,6 +173,8 @@ void CEmployee::Open(int argc, const char *pFileName, CEmployee *&pHead, CEmploy
         exit(1);
     } // end if
     
+    m_IsSaveNeeded = false; // Initialize; file has just been read; no modifications yet.
+    
     while (InFile.getline(str, 80)) // Read the file line by line and insert employee data into the linked list.
     {
         // Place line's data into this current object's member variables.
@@ -186,7 +198,7 @@ void CEmployee::Open(int argc, const char *pFileName, CEmployee *&pHead, CEmploy
  Function: void CEmployee::AddEmployee(CEmployee *&pHead, CEmployee *&pCurrent)
  
  Purpose: Gets input from user to create a new employee and adds them to the database. Uses *this current
-          object's member variable to store user input data.
+          object's member variable to store user input data. Sets m_IsSaveNeeded to true after insertion.
  
  Parameters:
      CEmployee *&pHead: Pointer to first link in linked list.
@@ -207,6 +219,8 @@ void CEmployee::AddEmployee(CEmployee *&pHead, CEmployee *&pCurrent)
     // Create a new employee object based on *this object's data and place the new employee in the list.
     Insert(pHead, pCurrent);
     
+    m_IsSaveNeeded = true; // A modification has been made.
+    
     return;
 }
 
@@ -214,7 +228,8 @@ void CEmployee::AddEmployee(CEmployee *&pHead, CEmployee *&pCurrent)
  
  Function: void CEmployee::DeleteEmployee(CEmployee *&pHead, CEmployee *&pCurrent)
  
- Purpose: Deletes an employee from the database based on the name supplied by the user.
+ Purpose: Deletes an employee from the database based on the name supplied by the user. Sets m_IsSaveNeeded
+          to true after deletion.
  
  Parameters:
     CEmployee *&pHead: Pointer to first link in linked list.
@@ -235,6 +250,8 @@ void CEmployee::DeleteEmployee(CEmployee *&pHead, CEmployee *&pCurrent)
     
     CEmployee *pDeleteThis = pCurrent;
     cout << "Deleting " << m_Name << " from the employee database.\n\n";
+    
+    m_IsSaveNeeded = true; // A modification is going to be made.
     
     if (pHead == pDeleteThis) // Link to be deleted is first in the list.
     {
@@ -264,7 +281,7 @@ void CEmployee::DeleteEmployee(CEmployee *&pHead, CEmployee *&pCurrent)
  Function: void CEmployee::SearchDatabase(CEmployee *&pHead, CEmployee *&pCurrent)
  
  Purpose: Searches database for employee whose name is supplied by the user. Sets pCurrent to the 
-          employee's link. Set's pCurrent to NULL if the employee is not found.
+          employee's link if employee is found. Sets pCurrent to NULL if employee is not found.
  
  Parameters:
     CEmployee *&pHead: Pointer to first link in linked list.
@@ -340,7 +357,7 @@ void CEmployee::ListAllEmployees(CEmployee *&pHead, CEmployee *&pCurrent)
  
  Function: void CEmployee::SaveToFile(const char *pFileName, CEmployee *&pHead, CEmployee *&pCurrent)
  
- Purpose: Displays each employee and their information to the screen.
+ Purpose: Writes database to data file. Sets m_IsSaveNeeded to false after writing.
  
  Parameters:
     const char *pFileName: Name of output file (argv[1]).
@@ -374,6 +391,10 @@ void CEmployee::SaveToFile(const char *pFileName, CEmployee *&pHead, CEmployee *
     } // end while
     
     OutFile.close();
+    
+    m_IsSaveNeeded = false; // File has just been saved; no save necessary when exiting.
+    
+    return;
 }
 
 /*********************************************************************************************************
@@ -558,7 +579,6 @@ void CEmployee::GetAgeFromUser()
  
  *********************************************************************************************************/
 
-// Get emmployee's salary from user and check for errors.
 void CEmployee::GetSalaryFromUser()
 {
     cout << "\nEnter the employee's salary: ";
@@ -596,9 +616,9 @@ void CEmployee::GetSalaryFromUser()
  
  Function: void CEmployee::DisplayCommaSalary()
  
- Purpose: Used in CEmployee::ListAllEmployees() to display this->m_Salary. Inserts commas if m_Salary
-          is greater than 1000. This function also prints salaries less than 1000 (no comma required)
-          to keep display formatting consistent.
+ Purpose: Used in CEmployee::ListAllEmployees() to display an employee's salary. Inserts commas if salary
+          is greater than 1000. Also prints salaries less than 1000 (no comma required) to keep display 
+          formatting consistent.
  
  Parameters: None
  
@@ -683,7 +703,8 @@ int main(int argc, const char * argv[])
     CEmployee *pHead = 0, *pCurrent = 0, EmployeeDB;
     int menuInput = 0;
     
-    EmployeeDB.Open(argc, argv[1], pHead, pCurrent); // Read input file and initialize database.
+    // Check command line args, read input file, and initialize database.
+    EmployeeDB.Open(argc, argv[1], pHead, pCurrent);
     
     while (menuInput != EXIT) // Get menu selection input from user until they choose to exit.
     {
@@ -713,7 +734,8 @@ int main(int argc, const char * argv[])
                 break;
                 
             case EXIT:
-                EmployeeDB.SaveToFile(argv[1], pHead, pCurrent);
+                if (EmployeeDB.CheckIfSaveNeeded()) // Check if data file has been modified.
+                    EmployeeDB.SaveToFile(argv[1], pHead, pCurrent);
                 EmployeeDB.ClearDatabase(pHead);
                 break;
                 
@@ -723,7 +745,7 @@ int main(int argc, const char * argv[])
         } // end switch
     } // end while
 
-    cout << "Goodbye!\n\n";
+    cout << "\nGoodbye!\n\n";
     
     return 0;
 }
