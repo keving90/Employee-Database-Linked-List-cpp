@@ -95,6 +95,8 @@ enum MenuSelection { ADD=1, DELETE, SEARCH, LIST, SAVE, EXIT };
 class CEmployee
 {
 public:
+    CEmployee() { };
+    CEmployee(char *name, int age, int salary) : m_Age(age), m_Salary(salary), m_pLink(0) { strcpy(m_Name, name);}
     void Open(int argc, const char *pFileName, CEmployee *&pHead, CEmployee *&pCurrent);
     void AddEmployee(CEmployee *&pHead, CEmployee *&pCurrent);
     void DeleteEmployee(CEmployee *&pHead, CEmployee *&pCurrent);
@@ -449,13 +451,9 @@ void CEmployee::ClearDatabase(CEmployee *pHead)
 void CEmployee::Insert(CEmployee *&pHead, CEmployee *&pCurrent)
 {
     CEmployee *pPrev;
-    CEmployee *pNewEmployee = new CEmployee;
     
-    // Initialize the new employee's member data.
-    strcpy(pNewEmployee->m_Name, m_Name);
-    pNewEmployee->m_Age = m_Age;
-    pNewEmployee->m_Salary = m_Salary;
-    pNewEmployee->m_pLink = 0;
+    // Create new employee and initialize with *this current object's data.
+    CEmployee *pNewEmployee = new CEmployee(m_Name, m_Age, m_Salary);
     
     if (!pHead) // Linked list is empty
         pHead = pNewEmployee;
